@@ -1,0 +1,14 @@
+{
+  "name": "lessons-learned-pt-1",
+  "version": "1.0.0",
+  "description": "Best practices, tips, tricks, and lessons learned while working with the ArcGIS API for JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jackie Roberts",
+  "license": "ISC",
+  "dependencies": {
+    "@types/arcgis-js-api": "^4.15.0"
+  }
+}
