@@ -1,0 +1,94 @@
+// client id
+qV9M0FTjceNID7Cn
+
+// webmap in Experience Builder
+f0c9b8e4b4fe4ac78bcfb73a6bf2d123
+
+interface IState {
+  jimuMapView: JimuMapView;
+  latitude: number;
+  longitude: number;
+}
+
+constructor(props) {
+    super(props);
+
+    this.state = {
+      jimuMapView: null,
+      latitude: null,
+      longitude: null,
+    };
+  }
+
+
+activeViewChangeHandler = (jmv: JimuMapView) => {
+    if (jmv) {
+      this.setState({
+        jimuMapView: jmv,
+      });
+
+      jmv.view.watch("extent", (evt: Extent) => {
+        this.setState({
+          latitude: evt.center.latitude,
+          longitude: evt.center.longitude,
+        });
+      });
+    }
+  };
+
+ render() {
+    return (
+      <div className="widget-demo jimu-widget" style={{ overflow: "auto" }}>
+        {this.props.hasOwnProperty("useMapWidgetIds") &&
+          this.props.useMapWidgetIds &&
+          this.props.useMapWidgetIds.length === 1 && (
+            <JimuMapViewComponent
+              useMapWidgetIds={this.props.useMapWidgetIds}
+              onActiveViewChange={this.activeViewChangeHandler}
+            />
+          )}
+
+// <div className="displayArea m-3 shadow-lg p-3 bg-white bg-white-rounded">
+
+        <div className="displayArea">
+          {this.state.latitude && this.state.longitude && (
+            <div>
+              {this.state.latitude}, {this.state.longitude}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+
+
+
+// setting.tsx
+import { React, Immutable, DataSourceManager } from "jimu-core";
+import { BaseWidgetSetting } from "jimu-for-builder";
+import { JimuMapViewSelector } from "jimu-ui/setting-components";
+import { ArcGISDataSourceTypes } from "jimu-arcgis";
+
+export default class Setting extends BaseWidgetSetting {
+  supportedTypes = Immutable([ArcGISDataSourceTypes.WebMap]);
+  dsManager = DataSourceManager.getInstance();
+
+  onMapSelected = (useMapWidgetIds: string[]) => {
+    this.props.onSettingChange({
+      id: this.props.id,
+      useMapWidgetIds: useMapWidgetIds,
+    });
+  };
+
+  render() {
+    return (
+      <div className="sample-use-map-view-setting p-2">
+        <JimuMapViewSelector
+          onSelect={this.onMapSelected}
+          useMapWidgetIds={this.props.useMapWidgetIds}
+        />
+      </div>
+    );
+  }
+}
+
+
